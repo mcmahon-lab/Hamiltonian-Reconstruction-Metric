@@ -1,1 +1,2 @@
-# hamiltonian_reconstruction_metric
+# Hamiltonian Reconstruction metric for Variational Quantum Eigensolver
+

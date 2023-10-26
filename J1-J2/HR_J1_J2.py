@@ -175,9 +175,9 @@ def main(args):
         else:
             backend = AerSimulator(noise_model = noise_model)
     else:
-        provider = AzureQuantumProvider(resource_id = "/subscriptions/58687a6b-a9bd-4f79-b7af-1f8f76760d4b/resourceGroups/AzureQuantum/providers/Microsoft.Quantum/Workspaces/HamiltonianReconstruction",\
-                                        location = "West US")
-        backend = provider.get_backend(args.backend)
+        raise ValueError("Pleae provide azure quantum subscription ID and uncomment the code below where the error was thrown")
+        # provider = AzureQuantumProvider(resource_id = "(resource/subscription ID)",location = "West US")
+        # backend = provider.get_backend(args.backend)
 
     if not os.path.isdir(os.path.join(args.input_dir, "measurement", f"{args.shots}_shots_{args.backend}_p1_{p1}_p2_{p2}")):
         os.makedirs(os.path.join(args.input_dir, "measurement", f"{args.shots}_shots_{args.backend}_p1_{p1}_p2_{p2}"))
@@ -201,7 +201,6 @@ def main(args):
     J1, J2 = hyperparam_dict["J1"], hyperparam_dict["J2"]
     n_layers = hyperparam_dict["n_layers"]
 
-    #get ground state NEED TO DELETE THIS LINE THO --> PROBABLY JUST GET IT WHEN VQE
     Hamiltonian = get_Hamiltonian(m, n, J1, J2)
     eigen_vals, eigen_vecs = np.linalg.eig(Hamiltonian)
     argmin_idx = np.argmin(eigen_vals)

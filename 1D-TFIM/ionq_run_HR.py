@@ -29,6 +29,14 @@ def get_args(parser):
     return args
 
 def Q_Circuit(N_qubits, var_params, h_l, n_layers):
+    """
+    Returns: qiskit n layer ALA circuit.
+
+    n_layers: n, corresponding to the number of layers.
+    N_qubits: the number of qubits in the ALA.
+    var_params: parameters used in the ALA.
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    """
     circ = QuantumCircuit(N_qubits, N_qubits)
     param_idx = 0
     for i in range(N_qubits):
@@ -66,9 +74,19 @@ def Q_Circuit(N_qubits, var_params, h_l, n_layers):
     return circ
 
 def get_measurement(n_qbts, var_params, backend, h_l, hyperparam_dict, param_idx):
+    """
+    Returns measurement, using the specified parameters below.
+
+    n_qbts: the number of qubits in the ALA.
+    var_params: parameters used in the ALA.
+    backend: backend used in qiskit
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    hyperparam_dict: dictionary that contains all the hyperparameters
+    param_idx: index to sample from list of parameters used in VQE
+    """
     measurement_path = os.path.join(args.input_dir, "measurement", f"{param_idx}th_param_{''.join([str(e) for e in h_l])}qbt_h_gate.npy")
     if os.path.exists(measurement_path):
-        #no need to save as it is already saved
+        #no need to recompute measurement as it is already saved
         measurement = np.load(measurement_path, allow_pickle = "True").item()
     else:
         circ = Q_Circuit(n_qbts, var_params, h_l, hyperparam_dict["n_layers"])
@@ -84,10 +102,24 @@ def get_measurement(n_qbts, var_params, backend, h_l, hyperparam_dict, param_idx
     return measurement
 
 def get_params(params_dir_path, param_idx):
+    """
+    Returns parameters used in VQE, using the arguments detailed below.
+
+    params_dir_path: directory that stores paramters from VQE
+    param_idx: index among the parameters used
+    """
     var_params = np.load(os.path.join(params_dir_path, f"var_params_{param_idx}.npy"))
     return var_params
 
 def get_HR_distance(hyperparam_dict, param_idx, params_dir_path, backend):
+    """
+    Returns Hamiltonian Reconstruction distance, using the specified arguments listed below.
+
+    hyperparam_dict: dictionary of hyperparameters used when obtain HR distance
+    param_idx: index used to sample from list of parameters used in VQE
+    params_dir_path: dicrectory path that contains list of parameters used in VQE
+    backend: backend used when laying out qiskit circuit
+    """
     cov_mat = np.zeros((2,2))
     n_qbts = hyperparam_dict["n_qbts"]
     #need to delete the below as well
@@ -150,9 +182,9 @@ def main(args):
     else:
         assert (not args.use_VQE_p1_p2), "Can't simulate p1 and p2 value when submitting jobs to IONQ simulator/hardware"
         assert (p1 == 0 and p2 == 0), "p1 and p2 values shouldn't be set when submitting job to IONQ simulator/hardware"
-        provider = AzureQuantumProvider(resource_id = "/subscriptions/58687a6b-a9bd-4f79-b7af-1f8f76760d4b/resourceGroups/AzureQuantum/providers/Microsoft.Quantum/Workspaces/HamiltonianReconstruction",\
-                                        location = "West US")
-        backend = provider.get_backend(backend_name)
+        raise ValueError("Pleae provide azure quantum subscription ID and uncomment the code below where the error was thrown")
+        # provider = AzureQuantumProvider(resource_id = "(resource/subscription ID), location = "West US")
+        # backend = provider.get_backend(backend_name)
     hyperparam_dict["p1"], hyperparam_dict["p2"] = p1, p2
     np.save(os.path.join(args.input_dir, "HR_hyperparam_dict.npy"), hyperparam_dict)
 
@@ -168,7 +200,7 @@ def main(args):
     with open(os.path.join(args.input_dir, "E_hist.pkl"), "rb") as fp:
         E_hist = pickle.load(fp)
 
-    #TODO need to load with special purposes
+    #use param_idx_l if provided.
     if args.param_idx_l:
         param_idx_l_path = os.path.join(args.input_dir, "param_idx_l.npy")
         assert os.path.isfile(param_idx_l_path), "there is no param_idx_l.npy file in input_dir"

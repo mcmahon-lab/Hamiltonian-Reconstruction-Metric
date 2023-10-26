@@ -1,16 +1,15 @@
 import sys
-from utils import get_exp_X, get_exp_ZZ
+from utils import get_exp_X, get_exp_ZZ, get_Hamiltonian
 import qiskit
 from qiskit import QuantumCircuit, Aer
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_aer import AerSimulator
 from qiskit.visualization import plot_histogram
 from qiskit.tools.monitor import job_monitor
-from azure.quantum.qiskit import AzureQuantumProvider
 from qiskit import transpile
 import numpy as np
 import argparse
-from qiskit.algorithms.optimizers import IMFIL
+from qiskit_algorithms.optimizers import IMFIL
 from functools import partial
 import pickle
 import matplotlib.pyplot as plt
@@ -32,6 +31,13 @@ def get_args(parser):
     return args
 
 def Q_Circuit(N_qubits, var_params, h_l):
+    """
+    Returns: qiskit n layer ALA circuit. n is specified by args.n_layers when parsing args.
+
+    N_qubits: the number of qubits in the ALA.
+    var_params: parameters used in the ALA.
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    """
     circ = QuantumCircuit(N_qubits, N_qubits)
     param_idx = 0
     for i in range(N_qubits):
@@ -69,6 +75,19 @@ def Q_Circuit(N_qubits, var_params, h_l):
     return circ
 
 def get_measurement(n_qbts, var_params, backend, shots, h_l):
+    """
+    Returns measurement from qiskit circuit
+
+    1. creates circ, a qiskit circuit, from given parameters
+    2. runs projective measurement.
+    3. Return the result, which is in the form of dictionary.
+
+    n_qbts: the number of qubits
+    var_params: parameters used when laying out qiskit circuit
+    backend: backend used in qiskit
+    shots: number of shots used for measurement
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    """
     circ = Q_Circuit(n_qbts, var_params, h_l)
     circ.measure(list(range(n_qbts)), list(range(n_qbts)))
     circ = transpile(circ, backend)
@@ -78,6 +97,15 @@ def get_measurement(n_qbts, var_params, backend, shots, h_l):
     return measurement
 
 def get_E(var_params, n_qbts, shots, J, backend):
+    """
+    Returns: Energy of the system of interest from the measurements made
+
+    var_params: parameters used when laying out qiskit circuit
+    n_qbts: the number of qubits
+    shots: number of shots used for measurement
+    J: coupling strengths between the adjacent spins for the 1D-TFIM model of interest
+    backend: backend used when laying out qiskit circ during simulations
+    """
     z_l, x_l = [], [i for i in range(n_qbts)]
     z_m = get_measurement(n_qbts, var_params, backend, shots, z_l)
     x_m = get_measurement(n_qbts, var_params, backend, shots, x_l)
@@ -93,9 +121,11 @@ def get_E(var_params, n_qbts, shots, J, backend):
     return E
 
 def main(args):
+    # Create params_dir that contains all lists of parameters used in VQE.
     if not os.path.exists(os.path.join(args.output_dir,"params_dir")):
         os.makedirs(os.path.join(args.output_dir,"params_dir"))
 
+    # Nparams is the number of parameters in the VQE ansatz
     Nparams = 0
     if args.n_qbts % 2 == 0:
         for i in range(args.n_layers):
@@ -107,6 +137,7 @@ def main(args):
         for i in range(args.n_layers):
             Nparams += (args.n_qbts - 1)
 
+    # Initialize paramaters randomly if not provided
     if args.init_param == "NONE":
         var_params = np.random.uniform(low = -np.pi, high = np.pi, size = Nparams)
     else:
@@ -116,12 +147,12 @@ def main(args):
 
     bounds = np.tile(np.array([-np.pi, np.pi]), (Nparams,1))
 
-    try:
-        dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        gst_E = np.load(os.path.join(dir_path, f"gst_E_dict_J_{args.J}_no_periodic.npy"), allow_pickle = True).item()[args.n_qbts]
-    except:
-        raise ValueError(f"no corresponding index to ground state energy J value to {args.n_qbts} qubits")
+    # get ground state energy of system interest
+    Ham = get_Hamiltonian(args.n_qbts, args.J)
+    eig_vals, _ = np.linalg.eig(Ham)
+    gst_E = np.amin(eig_vals)
 
+    # save all hyperparameters used for Hamiltonian Reconstruction
     hyperparam_dict = {}
     hyperparam_dict["n_qbts"], hyperparam_dict["J"] = args.n_qbts, args.J
     hyperparam_dict["shots"], hyperparam_dict["n_layers"] = args.shots, args.n_layers
