@@ -5,7 +5,6 @@ from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_aer import AerSimulator
 from qiskit.visualization import plot_histogram
 from qiskit.tools.monitor import job_monitor
-from azure.quantum.qiskit import AzureQuantumProvider
 from qiskit import transpile
 import numpy as np
 import argparse
