@@ -16,7 +16,8 @@ All results are stored in OUTPUT_DIR.
 The command below runs HR using the same model and ansatz when used to obtain the OUTPUT_DIR from simulating VQE.
 One-qubit and two-qubit gate depolarization values are set as 0.001 and 0.02 respectively.
 We only measure HR distances for indices specified in *param_idx_l.npy*.
-Note that *--param_idx_l* flag can be only used when there is a *param_idx_l.npy* file in OUTPUT_DIR.
+Note that the *--param_idx_l* flag can only be used when there is a *param_idx_l.npy* file in OUTPUT_DIR.
 *param_idx_l.npy* file can be created using **create_param_idx_l.py** script.
+Without the *--param_idx_l* flag, the HR distances for all lists of parameters from simulated VQE are calculated.
 
 > python ionq_run_HR.py --input_dir OUTPUT_DIR --shots 1000 --backend aer_simulator --param_idx_l --p1 0.001 --p2 0.02 
