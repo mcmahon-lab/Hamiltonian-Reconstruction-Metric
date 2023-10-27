@@ -1,9 +1,8 @@
 import sys
-sys.path.insert(0, "../")
 import numpy as np
 import os
 from qiskit import QuantumCircuit
-from qiskit.algorithms.optimizers import IMFIL
+from qiskit_algorithms.optimizers import IMFIL
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_aer import AerSimulator
 from qiskit import transpile
@@ -12,9 +11,9 @@ import argparse
 from functools import partial
 import pickle
 import matplotlib.pyplot as plt
-from depolarization_shot_noise.utils import get_Hamiltonian, expectation_X, get_NN_coupling, get_nNN_coupling
-from depolarization_shot_noise.utils import get_nearest_neighbors
-from depolarization_shot_noise.Circuit import Q_Circuit
+from utils import get_Hamiltonian, expectation_X, get_NN_coupling, get_nNN_coupling
+from utils import get_nearest_neighbors
+from Circuit import Q_Circuit
 
 E_hist = []
 
@@ -35,6 +34,18 @@ def get_args(parser):
     return args
 
 def get_measurement(h_dict, var_params, backend_noise, h_l):
+    """
+    Returns measurement from qiskit circuit
+
+    1. creates circ, a qiskit circuit, from given parameters
+    2. runs projective measurement.
+    3. Return the result, which is in the form of dictionary.
+
+    h_dict: all hyperparameter used when laying out the circuit
+    var_params: parameters used when laying out qiskit circuit
+    backend_noise: backend when laying out qiskit circuit
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    """
     m, n = h_dict["m"], h_dict["n"]
     n_qbts = m * n
     circ = Q_Circuit(m, n, var_params, h_l, h_dict["n_layers"], h_dict["ansatz_type"])
@@ -47,7 +58,11 @@ def get_measurement(h_dict, var_params, backend_noise, h_l):
 
 def get_E(var_params, hyperparam_dict, backend_noise):
     """
-    Get energy
+    Returns energy, given the arguments below.
+
+    var_params: parameters used when laying out qiskit circuit
+    hyperparam_dict: all hyperparameter used when laying out the circuit 
+    backend_noise: backend when laying out qiskit circuit
     """
     m, n = hyperparam_dict["m"], hyperparam_dict["n"]
     n_qbts = m * n

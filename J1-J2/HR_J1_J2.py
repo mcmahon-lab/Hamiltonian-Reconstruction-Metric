@@ -1,22 +1,18 @@
 import sys
-sys.path.insert(0, "../")
 import qiskit
-from qiskit import QuantumCircuit, Aer
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_aer import AerSimulator
-from qiskit.visualization import plot_histogram
 from qiskit.tools.monitor import job_monitor
-from azure.quantum.qiskit import AzureQuantumProvider
 from qiskit import transpile
 import numpy as np
 import argparse
 import pickle
 import matplotlib.pyplot as plt
 import os
-from depolarization_shot_noise.Circuit import Q_Circuit
-from depolarization_shot_noise.utils import expectation_X, get_NN_coupling, get_nNN_coupling, get_exp_cross
-from depolarization_shot_noise.utils import flatten_neighbor_l, get_nearest_neighbors, get_next_nearest_neighbors
-from depolarization_shot_noise.utils import distanceVecFromSubspace, get_Hamiltonian, get_fidelity
+from Circuit import Q_Circuit
+from utils import expectation_X, get_NN_coupling, get_nNN_coupling, get_exp_cross
+from utils import flatten_neighbor_l, get_nearest_neighbors, get_next_nearest_neighbors
+from utils import distanceVecFromSubspace, get_Hamiltonian, get_fidelity
 
 HR_dist_hist = []
 
@@ -33,6 +29,16 @@ def get_args(parser):
     return args
 
 def get_measurement(n_qbts, var_params, backend, h_l, hyperparam_dict, param_idx):
+    """
+    Returns measurement, using the specified parameters below.
+
+    n_qbts: the number of qubits in the ALA.
+    var_params: parameters used in the ALA.
+    backend: backend used in qiskit
+    h_l: indexes for laying out hadamard gate(s) in the last layer.
+    hyperparam_dict: dictionary that contains all the hyperparameters
+    param_idx: index to sample from list of parameters used in VQE
+    """
     num_shots = hyperparam_dict["shots"]
     backendnm = hyperparam_dict["backend"]
     p1, p2 = hyperparam_dict["p1"], hyperparam_dict["p2"]
@@ -187,6 +193,7 @@ def main(args):
     with open(os.path.join(args.input_dir, "E_hist.pkl"), "rb") as fp:
         E_hist = pickle.load(fp)
 
+    # use different filename if predefined parameter index list is defined
     if args.param_idx_l:
         fid_hist_filename = f"fid_param_idx_l_p1_{p1}_p2_{p2}.pkl"
         HR_dist_hist_filename =  f"HR_param_idx_l_{args.shots}shots_{args.backend}_p1_{p1}_p2_{p2}.pkl"
@@ -196,18 +203,17 @@ def main(args):
         HR_dist_hist_filename =  f"HR_{args.shots}shots_{args.backend}_p1_{p1}_p2_{p2}.pkl"
         img_name = f"layers_shots_{args.shots}_p1_{p1}_p2_{p2}_HR_dist.png"
 
+    # recover all the hyperparameters used in VQE
     gst_E = hyperparam_dict["gst_E"]
     m, n = hyperparam_dict["m"], hyperparam_dict["n"]
     J1, J2 = hyperparam_dict["J1"], hyperparam_dict["J2"]
     n_layers = hyperparam_dict["n_layers"]
 
+    # get ground state Hamiltonian and energy
     Hamiltonian = get_Hamiltonian(m, n, J1, J2)
     eigen_vals, eigen_vecs = np.linalg.eig(Hamiltonian)
     argmin_idx = np.argmin(eigen_vals)
     gst_E, ground_state = np.real(eigen_vals[argmin_idx]), eigen_vecs[:, argmin_idx]
-
-    NN_index_l= flatten_neighbor_l(get_nearest_neighbors(m, n), m, n)
-    nNN_index_l= flatten_neighbor_l(get_next_nearest_neighbors(m, n), m, n)
 
     HR_dist_hist = []
     fid_hist = []
@@ -226,7 +232,6 @@ def main(args):
         with open(os.path.join(args.input_dir, f"HR_dist_hist", HR_dist_hist_filename), "wb") as fp:
             pickle.dump(HR_dist_hist, fp)
 
-    #fid_hist
     if not os.path.isdir(os.path.join(args.input_dir, "fid_hist")):
         os.makedirs(os.path.join(args.input_dir, "fid_hist"))
 

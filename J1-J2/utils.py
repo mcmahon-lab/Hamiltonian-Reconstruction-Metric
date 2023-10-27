@@ -78,6 +78,12 @@ def create_partial_Hamiltonian(neighbor_l, m, n):
     return Hzz
 
 def get_nearest_neighbors(m, n):
+    """
+    Returns list of all nearest neighbor pairs in the m x n spin grid
+
+    m: number of spins in a column
+    n: number of spins in a row
+    """
     NN_coord_l = []
     for i in range(m):
         for j in range(n):
@@ -88,6 +94,12 @@ def get_nearest_neighbors(m, n):
     return NN_coord_l
 
 def get_next_nearest_neighbors(m, n):
+    """
+    Returns list of all next-nearest neighbor pairs in the m x n spin grid
+
+    m: number of spins in a column.
+    n: number of spins in a row.
+    """
     nNN_coord_l = []
     for i in range(m):
         for j in range(n):
@@ -98,6 +110,12 @@ def get_next_nearest_neighbors(m, n):
     return nNN_coord_l
 
 def flatten_neighbor_l(neighbor_l, m, n):
+    """
+    flatten neighbor the given neighbor list.
+
+    m: number of spins in a column.
+    n: number of spins in a row. 
+    """
     flat_neighbor_l = []
     for coord1, coord2 in neighbor_l:
         i1, j1 = coord1
