@@ -9,6 +9,7 @@ To run HR for 1D-TFIM, please use the following command to get more information 
 
 The command below runs VQE on 6 qubits 1-D TFIM with coupling strength 0.5, using 4 layers of ALA and with no initialization parameter specified.
 One-qubit and two-qubit gate depolarization values are set as 0.001 and 0.02 respectively when running quantum circuit simulation.
+All results are stored in OUTPUT_DIR.
 
 > python ionq_run.py --n_qbts 6 --J 0.5 --shots 1000 --n_layers 4 --output_dir OUTPUT_DIR --init_param NONE --p1 0.001 --p2 0.02
 
