@@ -10,6 +10,7 @@ To run HR for J1-J2 model, please use the following command to get more informat
 The command below runs VQE on 3x2 J1-J2 model with the nearest-neighbor coupling strength as 0.5 and the next-nearest coupling strength as 0.2.
 For our quantum ansatz, we use 4 layers ALA and without initialization parameter specified
 One-qubit and two-qubit gate depolarization values are set as 0.001 and 0.02 respectively when running quantum circuit simulation.
+All results are stored in OUTPUT_DIR.
 
 > python VQE_J1_J2.py --m 3 --n 2 --J1 0.5 --J2 0.2 --shots 1000 --n_layers 4 --output_dir OUTPUT_DIR --init_param NONE --p1 0.001 --p2 0.02
 
