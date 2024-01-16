@@ -1,4 +1,4 @@
-# Hamiltonian Reconstruction (HR) distance as a metric for Variational Quantum Eigensolver (VQE)
+# Hamiltonian Reconstruction (HR) distance as a success metric for the Variational Quantum Eigensolver (VQE)
 ![Alt text](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/blob/master/images/HR_distance.png)
 <br/><br/>
 
