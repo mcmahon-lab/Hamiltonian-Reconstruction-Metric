@@ -1,5 +1,5 @@
 # Hamiltonian Reconstruction (HR) distance as a success metric for the Variational Quantum Eigensolver (VQE)
-![Alt text](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/blob/master/images/HR_distance.png)
+![Alt text](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/blob/master/images/HR_distance.pdf)
 <br/><br/>
 
 *HR distance* is a metric used to evaluate the performance of VQE that only requires a polynomial number of measurements concerning the number of operators. HR distance was introduced in (arxiv link)
