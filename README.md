@@ -17,5 +17,7 @@ for the Variational Quantum Eigensolver." (2024)
 The code in this repository is released under the following license:
 [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
 
+A copy of the license is given in this repository as [License.txt](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/blob/master/License.txt)
+
 
 
