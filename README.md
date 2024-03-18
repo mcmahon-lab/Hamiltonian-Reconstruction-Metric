@@ -8,4 +8,14 @@ In this repository, we provide code to run VQE and HR for two different systems:
 
 We further provide a *requirements.txt* file in the root directory of the git repo, which can be used to build a [virtual environment](https://docs.python.org/3/library/venv.html) to run all the simulations without package dependency concerns. Please feel free to email jm2239(-at-)cornell.edu, if there are any questions about the git repo.
 
+# How to cite this code
+If you use any of our code in your research, please consider citing the following paper:
+>L.J.I Moon*, M.M. Sohoni*, M.A. Shimizu, P. Viswanathan, K.Zhang, E.A. Kim, and P.L. McMahon. "Hamiltonian-reconstruction distance as a success metric
+for the Variational Quantum Eigensolver." (2024)
+
+# License
+The code in this repository is released under the following license:
+[Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
+
+
 
