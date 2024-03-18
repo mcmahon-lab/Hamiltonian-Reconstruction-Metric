@@ -10,7 +10,7 @@ We further provide a *requirements.txt* file in the root directory of the git re
 
 # How to cite this code
 If you use any of our code in your research, please consider citing the following paper:
->L.J.I Moon*, M.M. Sohoni*, M.A. Shimizu, P. Viswanathan, K.Zhang, E.A. Kim, and P.L. McMahon. "Hamiltonian-reconstruction distance as a success metric
+>L.J.I Moon*, M.M. Sohoni*, M.A. Shimizu, P. Viswanathan, K. Zhang, E.A. Kim, and P.L. McMahon. "Hamiltonian-reconstruction distance as a success metric
 for the Variational Quantum Eigensolver." (2024)
 
 # License
