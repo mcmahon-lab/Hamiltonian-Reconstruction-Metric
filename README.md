@@ -2,7 +2,7 @@
 ![Alt text](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/blob/master/images/HR_distance.png)
 <br/><br/>
 
-*HR distance* is a metric used to evaluate the performance of VQE that only requires a polynomial number of measurements concerning the number of operators. HR distance was introduced in (arxiv link)
+*HR distance* is a metric used to evaluate the performance of VQE that only requires a polynomial number of measurements concerning the number of operators. HR distance was introduced in ([arXiv:2403.11995](https://arxiv.org/abs/2403.11995))
 
 In this repository, we provide code to run VQE and HR for two different systems: the 1D Transverse Field Ising model (1D TFIM) and the J1-J2 model (only with ZZ couplings). Directories **1D-TFIM** and **J1-J2** contain all the information to run VQE and HR for 1D TFIM and the J1-J2 model respectively. Example commands for each model are listed here: [1D TFIM](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/tree/master/1D-TFIM#example-commands) and [J1-J2 model](https://github.com/mcmahon-lab/hamiltonian_reconstruction_metric/tree/master/J1-J2#example-commands). We let the user decide on the number of qubits, the coupling strength between the neighboring spins (nearest neighbor as well for the J1-J2 model), the number of shots, and the level of depolarization noise. For the quantum circuit ansatz used in VQE, we only provide an arbitrary n-layer ALA, which the user can decide on the number of layers. However, it is not difficult to modify the code to use the ansatz of interest. Lastly, we used python [qiskit](https://qiskit.org/) library to simulate all quantum circuits.
 
